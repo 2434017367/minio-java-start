@@ -28,12 +28,11 @@ public class AppKeyUtil {
         String s = DateUtil.format(new Date(), TIME_FORMAT);
         StringBuffer sb = new StringBuffer();
 
-        // 偏移量
         int pyl = 0;
         for (int i = 0; i < s.length(); i++) {
             Integer index = Integer.parseInt(s.substring(i, i + 1));
-            if (i == 0) {
-                pyl = index;
+            if (i == 1) {
+                pyl = index % 5 + 1;
             }
             sb.append(CODEBOOK[index]);
         }
@@ -42,8 +41,18 @@ public class AppKeyUtil {
         String m = appKey.substring(0, pyl) + sjc + appKey.substring(pyl);
         StringBuffer mj = new StringBuffer();
         for (int i = 0; i < m.length(); i++) {
-            char c = (char)((int)m.charAt(i) + pyl);
-            mj.append(c);
+            int c = (int) m.charAt(i);
+            int y = c + pyl;
+            if (y < 48) {
+                y = 123 - (48 - y);
+            } else if (y > 57 && y < 65) {
+                y += 7;
+            } else if (y > 90 && y < 97) {
+                y += 6;
+            } else if (y > 122) {
+                y = y - 122 + 47;
+            }
+            mj.append((char) y);
         }
 
         EncryptEntity encryptEntity = new EncryptEntity(mj.toString(), sjc);
