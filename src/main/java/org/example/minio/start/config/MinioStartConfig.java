@@ -11,6 +11,8 @@ public class MinioStartConfig {
 
     private static String SERVE_URL;
 
+    private static Integer TIMEOUT = 15000;
+
     public static String getAppKey() {
         return APP_KEY;
     }
@@ -25,5 +27,13 @@ public class MinioStartConfig {
 
     public static void setServeUrl(String serveUrl) {
         SERVE_URL = serveUrl;
+    }
+
+    public static Integer getTimeout() {
+        return TIMEOUT;
+    }
+
+    public static void setTimeout(Integer timeout) {
+        MinioStartConfig.TIMEOUT = timeout;
     }
 }

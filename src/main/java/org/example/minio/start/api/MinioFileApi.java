@@ -30,6 +30,11 @@ public class MinioFileApi {
     }
 
     /**
+     * 临时文件保存路径
+     */
+    public static final String INTERIM_SAVE_PATH = "interim";
+
+    /**
      * 文件上传
      * @param resource
      * @param savePath 文件存放路径

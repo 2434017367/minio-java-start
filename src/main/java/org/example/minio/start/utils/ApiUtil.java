@@ -24,6 +24,7 @@ public class ApiUtil {
     public static HttpRequest getHttpRequest(Method method, String uri){
         String serveUrl = MinioStartConfig.getServeUrl();
         String appKey = MinioStartConfig.getAppKey();
+        Integer timeout = MinioStartConfig.getTimeout();
 
         EncryptEntity encrypt = AppKeyUtil.encrypt(appKey);
 
@@ -31,6 +32,7 @@ public class ApiUtil {
         HttpRequest request = HttpUtil.createRequest(method, url);
         request.header("key1", encrypt.getAppKey());
         request.header("key2", encrypt.getStamp());
+        request.timeout(timeout);
 
         return request;
     }
