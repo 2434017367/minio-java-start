@@ -75,16 +75,27 @@ public class MinioFileApi {
         HttpResponse httpResponse = downloadFile(fileId);
 
         httpResponse.writeBody(targetFilePath);
-
-        return;
     }
 
     public static void downloadFile(String fileId, OutputStream outputStream) {
         HttpResponse httpResponse = downloadFile(fileId);
 
         httpResponse.writeBody(outputStream, true, null);
+    }
 
-        return;
+    /**
+     * word转pdf
+     * @param wordPath
+     * @param pdfPath
+     */
+    public static void wordToPdf(String wordPath, String pdfPath) {
+        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.POST, getReqUri("wordToPdf"));
+
+        httpRequest.form("file", new FileResource(wordPath));
+
+        HttpResponse httpResponse = ApiUtil.executeHttpRequest(httpRequest);
+
+        httpResponse.writeBody(pdfPath);
     }
 
     /**
