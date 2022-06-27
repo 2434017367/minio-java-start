@@ -150,4 +150,13 @@ public class MinioFileApi {
         return getFileList(fileIds);
     }
 
+    /**
+     * 清除临时文件
+     */
+    public static void clearInterim() {
+        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("clearInterim"));
+
+        ApiUtil.executeHttpRequest(httpRequest);
+    }
+
 }
