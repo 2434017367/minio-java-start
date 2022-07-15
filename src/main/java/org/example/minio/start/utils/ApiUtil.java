@@ -8,7 +8,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.example.minio.start.config.MinioStartConfig;
 import org.example.minio.start.exception.MinioHttpException;
-import org.example.minio.start.utils.entity.EncryptEntity;
+import org.example.minio.start.utils.entity.appKey.Encode;
 
 /**
  * @author zhy
@@ -26,12 +26,17 @@ public class ApiUtil {
         String appKey = MinioStartConfig.getAppKey();
         Integer timeout = MinioStartConfig.getTimeout();
 
-        EncryptEntity encrypt = AppKeyUtil.encrypt(appKey);
+        Encode encode = null;
+        try {
+            encode = AppKeyUtils.encode(appKey);
+        } catch (Exception e) {
+            throw new MinioHttpException("key加密错误");
+        }
 
         String url = serveUrl + uri;
         HttpRequest request = HttpUtil.createRequest(method, url);
-        request.header("key1", encrypt.getAppKey());
-        request.header("key2", encrypt.getStamp());
+        request.header("key1", encode.getSecretKey());
+        request.header("key2", encode.getTimeStamp());
         request.timeout(timeout);
 
         return request;
