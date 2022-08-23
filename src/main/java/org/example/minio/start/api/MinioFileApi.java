@@ -2,6 +2,7 @@ package org.example.minio.start.api;
 
 import cn.hutool.core.io.resource.FileResource;
 import cn.hutool.core.io.resource.Resource;
+import cn.hutool.core.io.resource.UrlResource;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -9,9 +10,12 @@ import cn.hutool.http.Method;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import org.example.minio.start.entity.MinioFileEntity;
+import org.example.minio.start.entity.MinioShareFileEntity;
 import org.example.minio.start.utils.ApiUtil;
 
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,8 +59,26 @@ public class MinioFileApi {
         return fileId;
     }
 
+    /**
+     * 文件上传
+     * @param filePath
+     * @param savePath
+     * @return
+     */
     public static String uploadFile(String filePath, String savePath) {
         return uploadFile(new FileResource(filePath), savePath);
+    }
+
+    /**
+     * 文件上传
+     * @param fileUrl
+     * @param filename
+     * @param savePath
+     * @return
+     */
+    public static String uploadFile(String fileUrl, String filename, String savePath) throws MalformedURLException {
+        UrlResource urlResource = new UrlResource(new URL(fileUrl), filename);
+        return uploadFile(urlResource, savePath);
     }
 
     /**
@@ -157,6 +179,29 @@ public class MinioFileApi {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("clearInterim"));
 
         ApiUtil.executeHttpRequest(httpRequest);
+    }
+
+    /**
+     * 获取文件分享链接
+     * @param fileId
+     * @param second
+     * @return
+     */
+    public static MinioShareFileEntity getShareFile(String fileId, long second) {
+        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("getShareFile"));
+
+        httpRequest.form("fileId", fileId);
+        httpRequest.form("second", second);
+
+        HttpResponse httpResponse = ApiUtil.executeHttpRequest(httpRequest);
+        JSONObject jsonObject = ApiUtil.getResponseResult(httpResponse);
+        JSONObject data = jsonObject.getJSONObject("data");
+
+        MinioShareFileEntity minioShareFileEntity = new MinioShareFileEntity();
+        minioShareFileEntity.setFileUrl(data.getStr("fileUrl"));
+        minioShareFileEntity.setFileName(data.getStr("fileName"));
+
+        return minioShareFileEntity;
     }
 
 }
