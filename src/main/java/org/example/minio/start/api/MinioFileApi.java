@@ -204,4 +204,13 @@ public class MinioFileApi {
         return minioShareFileEntity;
     }
 
+    /**
+     * 获取文件分享链接 永久
+     * @param fileId
+     * @return
+     */
+    public static MinioShareFileEntity getShareFile(String fileId) {
+        return getShareFile(fileId, -1);
+    }
+
 }
