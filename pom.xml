@@ -192,7 +192,7 @@
         <repository>
           <id>github</id>
           <name>GitHub Packages</name>
-          <url>https://maven.pkg.github.com/elonehoo/minio-java-start</url>
+          <url>https://maven.pkg.github.com/2434017367/minio-java-start</url>
         </repository>
       </distributionManagement>
     </profile>
