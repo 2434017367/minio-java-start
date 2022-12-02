@@ -31,6 +31,6 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Publish to GitHub Packages
-        run: mvn --batch-mode deploy -DskipTests -Prelease-github
+        run: mvn --batch-mode deploy -DskipTests -Prelease-github -Dmaven.javadoc.skip=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
