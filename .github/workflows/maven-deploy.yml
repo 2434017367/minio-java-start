@@ -1,0 +1,36 @@
+name: Publish package to the GitHub Packages and version release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - run: npx changelogithub
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java for publishing to GitHub Packages
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Publish to GitHub Packages
+        run: cd core && mvn --batch-mode deploy -DskipTests -Prelease-github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
