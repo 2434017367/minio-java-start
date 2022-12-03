@@ -61,9 +61,9 @@ public class MinioFileApi {
 
     /**
      * 文件上传
-     * @param filePath
-     * @param savePath
-     * @return
+     * @param filePath 本地要上传的文件地址，为空则就是默认地址files
+     * @param savePath 要保存到minio的目录地址
+     * @return 文件id
      */
     public static String uploadFile(String filePath, String savePath) {
         return uploadFile(new FileResource(filePath), savePath);
@@ -71,10 +71,10 @@ public class MinioFileApi {
 
     /**
      * 文件上传
-     * @param fileUrl
-     * @param filename
-     * @param savePath
-     * @return
+     * @param fileUrl 要上传的文件链接地址，为空则就是默认地址files
+     * @param filename 要上传的文件名称带后缀
+     * @param savePath 要保存到minio的目录地址
+     * @return 文件id
      */
     public static String uploadFile(String fileUrl, String filename, String savePath) throws MalformedURLException {
         UrlResource urlResource = new UrlResource(new URL(fileUrl), filename);
@@ -93,12 +93,22 @@ public class MinioFileApi {
         return httpResponse;
     }
 
+    /**
+     * 下载文件
+     * @param fileId 文件id
+     * @param targetFilePath 文件要保存的本地地址
+     */
     public static void downloadFile(String fileId, String targetFilePath) {
         HttpResponse httpResponse = downloadFile(fileId);
 
         httpResponse.writeBody(targetFilePath);
     }
 
+    /**
+     * 下载文件
+     * @param fileId 文件id
+     * @param outputStream io流
+     */
     public static void downloadFile(String fileId, OutputStream outputStream) {
         HttpResponse httpResponse = downloadFile(fileId);
 
@@ -107,8 +117,8 @@ public class MinioFileApi {
 
     /**
      * word转pdf
-     * @param wordPath
-     * @param pdfPath
+     * @param wordPath 本地word文件地址
+     * @param pdfPath  转成pdf后要保存pdf本地地址
      */
     public static void wordToPdf(String wordPath, String pdfPath) {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.POST, getReqUri("wordToPdf"));
@@ -122,7 +132,7 @@ public class MinioFileApi {
 
     /**
      * 删除文件
-     * @param fileId
+     * @param fileId 文件id
      * @return
      */
     public static void delFile(String fileId) {
@@ -134,9 +144,9 @@ public class MinioFileApi {
     }
 
     /**
-     * 获取文件列表
-     * @param fileIds
-     * @return
+     * 获取文件信息列表
+     * @param fileIds 文件id串，id通过“,”逗号分割的字符串
+     * @return 文件对象信息列表
      */
     public static List<MinioFileEntity> getFileList(String fileIds) {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("getListByIds"));
@@ -160,12 +170,22 @@ public class MinioFileApi {
         return entityList;
     }
 
+    /**
+     * 获取文件信息列表
+     * @param fileIdList 文件id列表
+     * @return 文件对象信息列表
+     */
     public static List<MinioFileEntity> getFileList(Collection<String> fileIdList) {
         String fileIds = fileIdList.stream().collect(Collectors.joining(","));
 
         return getFileList(fileIds);
     }
 
+    /**
+     * 获取文件信息列表
+     * @param fileIdArr 文件id数组
+     * @return 文件对象信息列表
+     */
     public static List<MinioFileEntity> getFileList(String[] fileIdArr) {
         String fileIds = Arrays.stream(fileIdArr).collect(Collectors.joining(","));
 
@@ -183,8 +203,9 @@ public class MinioFileApi {
 
     /**
      * 获取文件分享链接
-     * @param fileId
-     * @param second
+     * 分享获取到的文件链接则会跳过校验，在链接后面加上isPreview=true参数则为文件预览。
+     * @param fileId 文件id
+     * @param second 要进行分享的秒数-1则为永久
      * @return
      */
     public static MinioShareFileEntity getShareFile(String fileId, long second) {
