@@ -40,9 +40,9 @@ public class MinioFileApi {
 
     /**
      * 文件上传
-     * @param resource
+     * @param resource 文件资源
      * @param savePath 文件存放路径
-     * @return
+     * @return 文件id
      */
     public static String uploadFile(Resource resource, String savePath) {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.POST, getReqUri("upload"));
@@ -75,16 +75,26 @@ public class MinioFileApi {
      * @param filename 要上传的文件名称带后缀
      * @param savePath 要保存到minio的目录地址
      * @return 文件id
+     * @throws MalformedURLException
      */
     public static String uploadFile(String fileUrl, String filename, String savePath) throws MalformedURLException {
-        UrlResource urlResource = new UrlResource(new URL(fileUrl), filename);
-        return uploadFile(urlResource, savePath);
+        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.POST, getReqUri("uploadUrl"));
+
+        httpRequest.form("path", savePath);
+        httpRequest.form("filename", filename);
+        httpRequest.form("fileurl", fileUrl);
+
+        HttpResponse httpResponse = ApiUtil.executeHttpRequest(httpRequest);
+        JSONObject jsonObject = ApiUtil.getResponseResult(httpResponse);
+        String fileId = jsonObject.getStr("data");
+
+        return fileId;
     }
 
     /**
      * 下载文件
      * @param fileId
-     * @return
+     * @return HttpResponse
      */
     private static HttpResponse downloadFile(String fileId) {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("download"));
@@ -133,7 +143,6 @@ public class MinioFileApi {
     /**
      * 删除文件
      * @param fileId 文件id
-     * @return
      */
     public static void delFile(String fileId) {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.DELETE, "delFile");
@@ -206,7 +215,7 @@ public class MinioFileApi {
      * 分享获取到的文件链接则会跳过校验，在链接后面加上isPreview=true参数则为文件预览。
      * @param fileId 文件id
      * @param second 要进行分享的秒数-1则为永久
-     * @return
+     * @return 分享文件数据
      */
     public static MinioShareFileEntity getShareFile(String fileId, long second) {
         HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("getShareFile"));
@@ -227,8 +236,8 @@ public class MinioFileApi {
 
     /**
      * 获取文件分享链接 永久
-     * @param fileId
-     * @return
+     * @param fileId 文件id
+     * @return 分享文件数据
      */
     public static MinioShareFileEntity getShareFile(String fileId) {
         return getShareFile(fileId, -1);
