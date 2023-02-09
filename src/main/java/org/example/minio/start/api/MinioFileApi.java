@@ -145,7 +145,7 @@ public class MinioFileApi {
      * @param fileId 文件id
      */
     public static void delFile(String fileId) {
-        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.DELETE, "delFile");
+        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.DELETE, getReqUri("delFile"));
 
         httpRequest.form("fileId", fileId);
 
