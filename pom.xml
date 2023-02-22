@@ -67,6 +67,7 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                    <encoding>utf8</encoding>
                 </configuration>
             </plugin>
             <!-- 跳过单元测试 -->
