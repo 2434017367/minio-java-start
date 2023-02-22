@@ -2,7 +2,6 @@ package org.example.minio.start.api;
 
 import cn.hutool.core.io.resource.FileResource;
 import cn.hutool.core.io.resource.Resource;
-import cn.hutool.core.io.resource.UrlResource;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -15,7 +14,6 @@ import org.example.minio.start.utils.ApiUtil;
 
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -241,6 +239,24 @@ public class MinioFileApi {
      */
     public static MinioShareFileEntity getShareFile(String fileId) {
         return getShareFile(fileId, -1);
+    }
+
+    /**
+     * 获取跳过认证文件上传的上传链接
+     * @param savePath
+     * @return
+     */
+    public static String getSkipAuthFileUploadUrl(String savePath) {
+        HttpRequest httpRequest = ApiUtil.getHttpRequest(Method.GET, getReqUri("getSkipAuthFileUploadUrl"));
+
+        httpRequest.form("path", savePath);
+
+        HttpResponse httpResponse = ApiUtil.executeHttpRequest(httpRequest);
+        JSONObject jsonObject = ApiUtil.getResponseResult(httpResponse);
+
+        String uploadUrl = jsonObject.getStr("data");
+
+        return uploadUrl;
     }
 
 }
